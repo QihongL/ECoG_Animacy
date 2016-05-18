@@ -6,10 +6,10 @@ clear variables; clc; close all;
 % point to the directory for the data
 DIR.DATA = '/Users/Qihong/Dropbox/github/ECOG_Manchester/data/ECoG/data/avg/BoxCar/010/WindowStart/0000/WindowSize/1000/';
 % point to the output directory
-DIR.OUT = '/Users/Qihong/Dropbox/github/ECOG_Manchester/results';
+DIR.OUT = '/Users/Qihong/Dropbox/github/ECOG_Manchester/results/';
 
 % specify parameters
-DATA_TYPE = 'ref'; % 'ref' OR 'raw'
+DATA_TYPE = 'raw'; % 'ref' OR 'raw'
 CVCOL = 1;      % use the 1st column of cv idx for now
 numCVB = 10;
 options.nlambda = 100;
@@ -86,4 +86,4 @@ for i = 1 : numSubjs
 end
 % save the data
 saveFileName = sprintf( strcat('results_', DATA_TYPE, '.mat'));
-save(saveFileName, 'results')
+save(strcat(DIR.OUT,saveFileName), 'results')
