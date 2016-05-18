@@ -1,4 +1,5 @@
 %% Do some quick analysis for the Manchster ECoG data
+% a single iteration of logistic regression with lasso or ridge penalty
 clear variables; clc; close all;
 % specify path information
 % point to the project dir

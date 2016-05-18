@@ -1,7 +1,7 @@
 %% Do some quick analysis for the Manchster ECoG data
+% a single iteration of logistic regression with lasso or ridge penalty
 clear variables; clc; 
 % specify path information
-
 % point to the output directory
 DIR.OUT = '/Users/Qihong/Dropbox/github/ECOG_Manchester/results/';
 DATA_TYPE = 'raw';
