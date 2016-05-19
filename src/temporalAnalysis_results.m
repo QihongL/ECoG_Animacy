@@ -10,6 +10,7 @@ numCVB = 10;
 options.nlambda = 100;
 BOXCAR = '001';
 WIND_SIZE = '0050';
+TRIM = 2; % TODO fix this! 
 
 % specify path information
 DIR.PROJECT = '/Users/Qihong/Dropbox/github/ECOG_Manchester';
@@ -36,19 +37,19 @@ nSubjs.common = length(allSubjIDs.common);
 
 %% collecting accuracy scores over time
 % preallocate
-rawAccuracy.lasso.min = nan(nTimePts, nSubjs.raw);
-refAccuracy.lasso.min = nan(nTimePts, nSubjs.ref);
+rawAccuracy.lasso_min = nan(nTimePts-TRIM, nSubjs.raw);
+refAccuracy.lasso_min = nan(nTimePts-TRIM, nSubjs.ref);
 
 % loop over time
-for t = 1 : nTimePts-2
+for t = 1 : nTimePts-TRIM
     % loop over subjects
     load(strcat(DIR.DATA{t}, 'results_', 'raw', '.mat'))
     for s = 1 : nSubjs.raw
-        rawAccuracy.lasso.min(t,s) = mean(results{s}.lasso.accuracy.min);
+        rawAccuracy.lasso_min(t,s) = mean(results{s}.lasso.accuracy.min);
     end
     load(strcat(DIR.DATA{t}, 'results_', 'ref', '.mat'))
     for s = 1 : nSubjs.ref
-        refAccuracy.lasso.min(t,s) = mean(results{s}.lasso.accuracy.min);
+        refAccuracy.lasso_min(t,s) = mean(results{s}.lasso.accuracy.min);
     end
 end
 
@@ -63,8 +64,8 @@ figure(1)
 for i = 1 : nSubjs.common
     subplot(2, ceil(nSubjs.common/2), i);
     hold on
-    plot(rawAccuracy.lasso.min(:,subjIdx.raw(i)))
-    plot(refAccuracy.lasso.min(:,subjIdx.ref(i)))
+    plot(rawAccuracy.lasso_min(:,subjIdx.raw(i)))
+    plot(refAccuracy.lasso_min(:,subjIdx.ref(i)))
     plot([1 nTimePts],[.5 .5], 'k--')
     hold off
     
@@ -72,24 +73,55 @@ for i = 1 : nSubjs.common
     title(title_text, 'fontsize' , FS)
     ylabel('Holdout accuracy', 'fontsize' , FS)
     xlabel('Time (unit of 10ms)', 'fontsize' , FS)
-    leg = legend({'Raw','Ref', 'chance level'}, 'location', 'southeast');
+    leg = legend({'Raw','Ref', 'chance(.5)'}, 'location', 'southeast');
     set(leg,'FontSize',FS); 
 end
 
 
 %% plot the average accuracy
 figure(2)
-hold on
-plot(mean(rawAccuracy.lasso.min(:,subjIdx.raw),2), 'linewidth', LW)
-plot(mean(refAccuracy.lasso.min(:,subjIdx.ref),2), 'linewidth', LW)
-plot([1 nTimePts],[.5 .5], 'k--')
-hold off
+xrange = [0,170];
+yrange = [.4,.9];
 
-title_text = sprintf('Lasso accuracy over time, averaged across common subjects');
+% plot with error bars 
+subplot(2,1,1)
+alpha = .975; 
+tval = tinv(.975,nSubjs.common-1);
+average.raw = mean(rawAccuracy.lasso_min(:,subjIdx.raw),2);
+average.ref = mean(refAccuracy.lasso_min(:,subjIdx.ref),2);
+stdev.raw = std(rawAccuracy.lasso_min(:,subjIdx.raw)');
+stdev.ref = std(refAccuracy.lasso_min(:,subjIdx.ref)');
+xlim(xrange)
+ylim(yrange)
+hold on 
+errorbar(1:nTimePts-TRIM,average.raw,stdev.raw)
+errorbar(1:nTimePts-TRIM,average.ref,stdev.ref)
+plot([1 nTimePts],[.5 .5], 'k--')
+hold off 
+
+% text 
+title_text = sprintf('Lasso accuracy over time, averaged across %d common subjects', nSubjs.common);
 title(title_text, 'fontsize' , FS)
 ylabel('Holdout accuracy', 'fontsize' , FS)
 xlabel('Time (unit of 10ms)', 'fontsize' , FS)
-leg = legend({'Raw','Ref', 'chance level'}, 'location', 'southeast');
+leg = legend({'Raw','Ref', 'chance(.5)'}, 'location', 'southeast');
+set(leg,'FontSize',FS);
+
+
+% plot withour error bars 
+subplot(2,1,2)
+hold on
+plot(mean(rawAccuracy.lasso_min(:,subjIdx.raw),2), 'linewidth', LW)
+plot(mean(refAccuracy.lasso_min(:,subjIdx.ref),2), 'linewidth', LW)
+plot([1 nTimePts],[.5 .5], 'k--')
+hold off
+xlim(xrange)
+ylim(yrange)
+title_text = sprintf('Lasso accuracy over time, averaged across %d common subjects', nSubjs.common);
+% title(title_text, 'fontsize' , FS)
+ylabel('Holdout accuracy', 'fontsize' , FS)
+xlabel('Time (unit of 10ms)', 'fontsize' , FS)
+leg = legend({'Raw','Ref', 'chance(.5)'}, 'location', 'southeast');
 set(leg,'FontSize',FS);
 
 

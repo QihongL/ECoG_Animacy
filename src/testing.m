@@ -1,7 +1,8 @@
-A=[3 4 5 6 7];
-B=[4 6 7];
-[tf,loc]=ismember(A,B);
-idx=[1:length(A)];
-idx=idx(tf);
-idx=idx(loc(tf));
-disp(A(idx))
+x = 0:pi/10:pi;
+y = sin(x);
+e = std(y)*ones(size(x));
+
+e
+
+figure
+errorbar(x,y,e)
