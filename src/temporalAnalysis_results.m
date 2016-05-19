@@ -69,7 +69,7 @@ for i = 1 : nSubjs.common
     plot([1 nTimePts],[.5 .5], 'k--')
     hold off
     
-    title_text = sprintf('Accuracy, data: %s, subjID: %d', DATA_TYPE, allSubjIDs.common(i));
+    title_text = sprintf('Accuracy, subjID: %d', allSubjIDs.common(i));
     title(title_text, 'fontsize' , FS)
     ylabel('Holdout accuracy', 'fontsize' , FS)
     xlabel('Time (unit of 10ms)', 'fontsize' , FS)

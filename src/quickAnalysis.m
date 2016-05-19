@@ -1,16 +1,23 @@
 %% Do some quick analysis for the Manchster ECoG data
 % a single iteration of logistic regression with lasso or ridge penalty
 clear variables; clc; close all;
+
+% path parameters
+BOXCAR = '010';
+WIND_START = '0000';
+WIND_SIZE = '1000';
+
 % specify path information
 % point to the project dir
 % DIR.PROJECT = '/Users/Qihong/Dropbox/github/ECOG_Manchester';
 % point to the directory for the data
-DIR.DATA = '/Users/Qihong/Dropbox/github/ECOG_Manchester/data/ECoG/data/avg/BoxCar/010/WindowStart/0000/WindowSize/1000/';
+DIR.DATA = strcat('/Users/Qihong/Dropbox/github/ECOG_Manchester/data/ECoG/data/avg/BoxCar/', ...
+    BOXCAR, '/WindowStart/', WIND_START, '/WindowSize/', WIND_SIZE, '/');
 % point to the output directory
-DIR.OUT = '/Users/Qihong/Dropbox/github/ECOG_Manchester/results/';
+DIR.OUT = '/Users/Qihong/Dropbox/github/ECOG_Manchester/results/allTimePts/';
 
 % specify parameters
-DATA_TYPE = 'raw'; % 'ref' OR 'raw'
+DATA_TYPE = 'ref'; % 'ref' OR 'raw'
 CVCOL = 1;      % use the 1st column of cv idx for now
 numCVB = 10;
 options.nlambda = 100;
@@ -28,6 +35,8 @@ results = cell(numSubjs,1);
 % loop over subjects
 for i = 1 : numSubjs
     s = subjIDs(i);
+    fprintf('Subj%.2d: ', s);
+    
     % preallocate: results{i} for the ith subject
     results{i}.subjID = s;
     results{i}.dataType = DATA_TYPE;
@@ -46,6 +55,7 @@ for i = 1 : numSubjs
     
     % loop over CV blocks
     for c = 1: numCVB
+        fprintf('%d ', c);
         % choose a cv index
         testIdx = cvidx == c;
         % hold out the test set
@@ -83,8 +93,10 @@ for i = 1 : numSubjs
         results{i}.ridge.accuracy.min(c) = sum(y_hat == y_test) / length(y_test);
         
     end
-    
+    fprintf('\n');
 end
 % save the data
-saveFileName = sprintf( strcat('results_', DATA_TYPE, '.mat'));
+saveFileName = sprintf( strcat('results_', DATA_TYPE,'_bc',BOXCAR, ...
+    '_wStart',WIND_START, 'wSize', WIND_SIZE, '.mat'));
+
 save(strcat(DIR.OUT,saveFileName), 'results')
