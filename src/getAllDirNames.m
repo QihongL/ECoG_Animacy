@@ -8,7 +8,7 @@ rmidx = [];
 for i = 1 : length(dirList)
 %     fprintf('%s\n', dirList(i).name)
     if (~dirList(i).isdir)
-        warning('Non-directory exists, this code does not work');
+%         warning('Non-directory exists, this code does not work');
         rmidx = vertcat(rmidx,i);
     end
     

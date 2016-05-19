@@ -2,13 +2,12 @@
 % a single iteration of logistic regression with lasso or ridge penalty
 clear variables; clc; close all;
 
-% specify parameters
+% specify mvpa parameters
 DATA_TYPES = {'raw','ref'};
 DATA_TYPE = 'raw'; % 'ref' OR 'raw'
 CVCOL = 1;      % use the 1st column of cv idx for now
 numCVB = 10;
 options.nlambda = 100;
-
 BOXCAR = '001';
 WIND_SIZE = '0050';
 
@@ -19,66 +18,80 @@ DIR.WIND_START = fullfile(DIR.PROJECT, 'results/temporal/BoxCar', BOXCAR, '/Wind
 WIND_START = getAllDirNames(DIR.WIND_START);
 DIR.DATA = getAllDataPath(DIR.WIND_START, WIND_START, WIND_SIZE);
 
-% get some common parameters
-load(strcat(DIR.DATA{1}, 'results_', DATA_TYPE, '.mat'))
-
+% get some common parameters, for data processing purpose 
 nTimePts = length(DIR.DATA);
-nSubjs = length(results); % assume all timePts have the same # of subj
+% read subject info for the raw data
+load(strcat(DIR.DATA{1}, 'results_', DATA_TYPES{1}, '.mat'))
+[nSubjs.raw, allSubjIDs.raw] = getSubjInfoFromResults(results);
+% read subject info for the ref data
+load(strcat(DIR.DATA{1}, 'results_', DATA_TYPES{2}, '.mat'))
+[nSubjs.ref, allSubjIDs.ref] = getSubjInfoFromResults(results);
+allSubjIDs.common = intersect(allSubjIDs.raw,allSubjIDs.ref);
+nSubjs.common = length(allSubjIDs.common);
+
+% get index for the common subects (across dataType)
+[~,subjIdx.raw]=ismember(allSubjIDs.common, allSubjIDs.raw);
+[~,subjIdx.ref]=ismember(allSubjIDs.common, allSubjIDs.ref);
 
 
-
-
-%% collecting accuracy scores over time 
+%% collecting accuracy scores over time
 % preallocate
-accuracy.lasso.onese = nan(nTimePts, nSubjs);
-accuracy.lasso.min = nan(nTimePts, nSubjs);
+rawAccuracy.lasso.min = nan(nTimePts, nSubjs.raw);
+refAccuracy.lasso.min = nan(nTimePts, nSubjs.ref);
 
-% loop over time 
+% loop over time
 for t = 1 : nTimePts-2
-    load(strcat(DIR.DATA{t}, 'results_', DATA_TYPE, '.mat'))
     % loop over subjects
-    for i = 1 : nSubjs
-        accuracy.lasso.onese(t,i) = mean(results{i}.lasso.accuracy.onese);
-        accuracy.lasso.min(t,i) = mean(results{i}.lasso.accuracy.min);
+    load(strcat(DIR.DATA{t}, 'results_', 'raw', '.mat'))
+    for s = 1 : nSubjs.raw
+        rawAccuracy.lasso.min(t,s) = mean(results{s}.lasso.accuracy.min);
+    end
+    load(strcat(DIR.DATA{t}, 'results_', 'ref', '.mat'))
+    for s = 1 : nSubjs.ref
+        refAccuracy.lasso.min(t,s) = mean(results{s}.lasso.accuracy.min);
     end
 end
 
 
-%% plot the average accuracy
+
+%% plot 
 FS = 14;
 LW = 2;
+
+%% accuracy for individual subject
 figure(1)
-hold on
-plot(mean(accuracy.lasso.onese,2), 'linewidth', LW)
-plot(mean(accuracy.lasso.min,2), 'linewidth', LW)
-plot([1 nTimePts],[.5 .5], 'k--')
-hold off
-
-title_text = sprintf('Accuracy over time, data: %s',DATA_TYPE);
-title(title_text, 'fontsize' , FS)
-ylabel('Holdout accuracy', 'fontsize' , FS)
-xlabel('Time (unit of 10ms)', 'fontsize' , FS)
-leg = legend({'lasso(1se)','lasso(min)', 'chance level'}, 'location', 'southeast');
-set(leg,'FontSize',FS);
-
-%% individual subject
-figure(2)
-
-for i = 1 : nSubjs
-    subplot(2, nSubjs/2, i);
+for i = 1 : nSubjs.common
+    subplot(2, ceil(nSubjs.common/2), i);
     hold on
-    plot(accuracy.lasso.onese(:,i))
-    plot(accuracy.lasso.min(:,i))
+    plot(rawAccuracy.lasso.min(:,subjIdx.raw(i)))
+    plot(refAccuracy.lasso.min(:,subjIdx.ref(i)))
     plot([1 nTimePts],[.5 .5], 'k--')
     hold off
-    title_text = sprintf('Accuracy, data: %s, subjID: %d', DATA_TYPE, results{i}.subjID);
+    
+    title_text = sprintf('Accuracy, data: %s, subjID: %d', DATA_TYPE, allSubjIDs.common(i));
     title(title_text, 'fontsize' , FS)
     ylabel('Holdout accuracy', 'fontsize' , FS)
     xlabel('Time (unit of 10ms)', 'fontsize' , FS)
-    leg = legend({'lasso(1se)','lasso(min)', 'chance level'}, 'location', 'southeast');
-    set(leg,'FontSize',FS);
-    
+    leg = legend({'Raw','Ref', 'chance level'}, 'location', 'southeast');
+    set(leg,'FontSize',FS); 
 end
+
+
+%% plot the average accuracy
+figure(2)
+hold on
+plot(mean(rawAccuracy.lasso.min(:,subjIdx.raw),2), 'linewidth', LW)
+plot(mean(refAccuracy.lasso.min(:,subjIdx.ref),2), 'linewidth', LW)
+plot([1 nTimePts],[.5 .5], 'k--')
+hold off
+
+title_text = sprintf('Lasso accuracy over time, averaged across common subjects');
+title(title_text, 'fontsize' , FS)
+ylabel('Holdout accuracy', 'fontsize' , FS)
+xlabel('Time (unit of 10ms)', 'fontsize' , FS)
+leg = legend({'Raw','Ref', 'chance level'}, 'location', 'southeast');
+set(leg,'FontSize',FS);
+
 
 
 
