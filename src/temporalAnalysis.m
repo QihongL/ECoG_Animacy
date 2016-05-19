@@ -3,7 +3,7 @@
 clear variables; clc; close all;
 
 % specify parameters
-DATA_TYPE = 'ref'; % 'ref' OR 'raw'
+DATA_TYPE = 'raw'; % 'ref' OR 'raw'
 CVCOL = 1;      % use the 1st column of cv idx for now
 numCVB = 10;
 options.nlambda = 100;
@@ -70,14 +70,14 @@ for t = 1 : numTimePts
 %             results{i}.ridge.accuracy.onese(c) = result.ridge.accuracy.onese;
 %             results{i}.ridge.accuracy.min(c) = result.ridge.accuracy.min;
             
-        end
+        end 
     end
     fprintf('\n');
     % get final output directory
     finalOutDir = fullfile(DIR.OUT, 'BoxCar', BOXCAR, ...
         'WindowStart', WIND_START(t).name, 'WindowSize', WIND_SIZE, '/');
     if exist(finalOutDir,'dir') == 7
-        warning('Final out dir exists!')
+%         warning('Final out dir exists!')
     else
         mkdir(finalOutDir)
     end
