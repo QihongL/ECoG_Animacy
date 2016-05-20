@@ -4,7 +4,7 @@ clear variables; clc; close all;
 
 % path parameters
 BOXCAR = '010';
-WIND_START = '0000';
+WIND_START = '0200';
 WIND_SIZE = '1000';
 
 % specify path information
@@ -17,7 +17,7 @@ DIR.DATA = strcat('/Users/Qihong/Dropbox/github/ECOG_Manchester/data/ECoG/data/a
 DIR.OUT = '/Users/Qihong/Dropbox/github/ECOG_Manchester/results/allTimePts/';
 
 % specify parameters
-DATA_TYPE = 'ref'; % 'ref' OR 'raw'
+DATA_TYPE = 'raw'; % 'ref' OR 'raw'
 CVCOL = 1;      % use the 1st column of cv idx for now
 numCVB = 10;
 options.nlambda = 100;
@@ -67,10 +67,10 @@ for i = 1 : numSubjs
         % fit lasso
         options.alpha = 1; % 1 == lasso, 0 == ridge
         cvfit = cvglmnet(X_train, y_train, 'binomial', options);
-        results{i}.lasso.coef_1se = cvglmnetCoef(cvfit, 'lambda_1se');
-        results{i}.lasso.lambda_1se = cvfit.lambda_1se;
-        results{i}.lasso.coef_min = cvglmnetCoef(cvfit, 'lambda_min');
-        results{i}.lasso.lambda_min = cvfit.lambda_min;
+        results{i}.lasso.coef_1se{c} = cvglmnetCoef(cvfit, 'lambda_1se');
+        results{i}.lasso.lambda_1se(c) = cvfit.lambda_1se;
+        results{i}.lasso.coef_min{c} = cvglmnetCoef(cvfit, 'lambda_min');
+        results{i}.lasso.lambda_min(c) = cvfit.lambda_min;
         
         % compute the performance
         y_hat = myStepFunction(cvglmnetPredict(cvfit, X_test,cvfit.lambda_1se));
@@ -81,10 +81,10 @@ for i = 1 : numSubjs
         % fit ridge
         options.alpha = 0; % 1 == lasso, 0 == ridge
         cvfit = cvglmnet(X_train, y_train, 'binomial', options);
-        results{i}.ridge.coef_1se = cvglmnetCoef(cvfit, 'lambda_1se');
-        results{i}.ridge.lambda_1se = cvfit.lambda_1se;
-        results{i}.ridge.coef_min = cvglmnetCoef(cvfit, 'lambda_min');
-        results{i}.ridge.lambda_min = cvfit.lambda_min;
+        results{i}.ridge.coef_1se{c} = cvglmnetCoef(cvfit, 'lambda_1se');
+        results{i}.ridge.lambda_1se(c) = cvfit.lambda_1se;
+        results{i}.ridge.coef_min{c} = cvglmnetCoef(cvfit, 'lambda_min');
+        results{i}.ridge.lambda_min(c) = cvfit.lambda_min;
         
         % compute the performance
         y_hat = myStepFunction(cvglmnetPredict(cvfit, X_test,cvfit.lambda_1se));
@@ -96,7 +96,7 @@ for i = 1 : numSubjs
     fprintf('\n');
 end
 % save the data
-saveFileName = sprintf( strcat('results_', DATA_TYPE,'_bc',BOXCAR, ...
+saveFileName = sprintf( strcat('newresults_', DATA_TYPE,'_bc',BOXCAR, ...
     '_wStart',WIND_START, 'wSize', WIND_SIZE, '.mat'));
 
 save(strcat(DIR.OUT,saveFileName), 'results')

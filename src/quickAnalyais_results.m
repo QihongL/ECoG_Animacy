@@ -6,7 +6,7 @@ clear variables; clc;
 DIR.OUT = '/Users/Qihong/Dropbox/github/ECOG_Manchester/results/allTimePts/';
 % mvpa parameters
 BOXCAR = '010';
-WIND_START = '0000';
+WIND_START = '0200';
 WIND_SIZE = '1000';
 
 % read results, raw data
@@ -85,4 +85,10 @@ xlabel('Subject ID', 'fontsize' , FS)
 leg = legend({'lasso(raw)','lasso(ref)', 'ridge(raw)','ridge(ref)'}, 'location', 'northwest');
 set(leg,'FontSize',FS);
 
+
+%% 
+mean(rawAcc.lasso_min(subjIdx.raw))
+mean(refAcc.lasso_min(subjIdx.ref))
+mean(rawAcc.ridge_min(subjIdx.raw)) 
+mean(refAcc.ridge_min(subjIdx.ref))
 

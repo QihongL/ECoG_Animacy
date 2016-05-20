@@ -68,7 +68,7 @@ for i = 1 : nSubjs.common
     plot(refAccuracy.lasso_min(:,subjIdx.ref(i)))
     plot([1 nTimePts],[.5 .5], 'k--')
     hold off
-    
+    ylim([.4 1])
     title_text = sprintf('Accuracy, subjID: %d', allSubjIDs.common(i));
     title(title_text, 'fontsize' , FS)
     ylabel('Holdout accuracy', 'fontsize' , FS)
@@ -89,8 +89,8 @@ alpha = .975;
 tval = tinv(.975,nSubjs.common-1);
 average.raw = mean(rawAccuracy.lasso_min(:,subjIdx.raw),2);
 average.ref = mean(refAccuracy.lasso_min(:,subjIdx.ref),2);
-stdev.raw = std(rawAccuracy.lasso_min(:,subjIdx.raw)');
-stdev.ref = std(refAccuracy.lasso_min(:,subjIdx.ref)');
+stdev.raw = std(rawAccuracy.lasso_min(:,subjIdx.raw)') * tval;
+stdev.ref = std(refAccuracy.lasso_min(:,subjIdx.ref)') * tval;
 xlim(xrange)
 ylim(yrange)
 hold on 
@@ -123,7 +123,4 @@ ylabel('Holdout accuracy', 'fontsize' , FS)
 xlabel('Time (unit of 10ms)', 'fontsize' , FS)
 leg = legend({'Raw','Ref', 'chance(.5)'}, 'location', 'southeast');
 set(leg,'FontSize',FS);
-
-
-
 
