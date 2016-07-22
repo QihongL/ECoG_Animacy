@@ -1,0 +1,80 @@
+---
+data:
+  - "/media/chris/Data/MRI/Manchester/data/fromRick/subject01.mat"
+  - "/media/chris/Data/MRI/Manchester/data/fromRick/subject02.mat"
+  - "/media/chris/Data/MRI/Manchester/data/fromRick/subject03.mat"
+  - "/media/chris/Data/MRI/Manchester/data/fromRick/subject04.mat"
+  - "/media/chris/Data/MRI/Manchester/data/fromRick/subject05.mat"
+  - "/media/chris/Data/MRI/Manchester/data/fromRick/subject06.mat"
+  - "/media/chris/Data/MRI/Manchester/data/fromRick/subject07.mat"
+  - "/media/chris/Data/MRI/Manchester/data/fromRick/subject08.mat"
+  - "/media/chris/Data/MRI/Manchester/data/fromRick/subject09.mat"
+  - "/media/chris/Data/MRI/Manchester/data/fromRick/subject10.mat"
+  - "/media/chris/Data/MRI/Manchester/data/fromRick/subject11.mat"
+  - "/media/chris/Data/MRI/Manchester/data/fromRick/subject12.mat"
+  - "/media/chris/Data/MRI/Manchester/data/fromRick/subject13.mat"
+  - "/media/chris/Data/MRI/Manchester/data/fromRick/subject14.mat"
+  - "/media/chris/Data/MRI/Manchester/data/fromRick/subject15.mat"
+  - "/media/chris/Data/MRI/Manchester/data/fromRick/subject16.mat"
+  - "/media/chris/Data/MRI/Manchester/data/fromRick/subject17.mat"
+  - "/media/chris/Data/MRI/Manchester/data/fromRick/subject18.mat"
+  - "/media/chris/Data/MRI/Manchester/data/fromRick/subject19.mat"
+  - "/media/chris/Data/MRI/Manchester/data/fromRick/subject20.mat"
+  - "/media/chris/Data/MRI/Manchester/data/fromRick/subject21.mat"
+  - "/media/chris/Data/MRI/Manchester/data/fromRick/subject22.mat"
+  - "/media/chris/Data/MRI/Manchester/data/fromRick/subject23.mat"
+data_var: "X"
+metadata: "/media/chris/Data/MRI/Manchester/data/fromRick/metadata_new.mat"
+metadata_var: "metadata"
+# Targets
+## IF SOSLASSO, SET THIS
+target: "visual"
+## IF NETWORK RSA, SET THESE
+#target: "visual"
+#sim_source: ""
+#sim_metric: ""
+
+filters: ["colfilter"]
+
+# Cross validation
+cvscheme: 1
+cvholdout: [2,3,4,5,6,7,8,9]
+finalholdout: 1
+
+# Regularization and normalization
+regularization: "soslasso"
+normalize: "zscore"
+bias: False
+
+# Regularization parameters
+## SOS LASSO
+lambda: 0.8
+alpha: 0.8
+## Group defitions (in mm)
+diameter: 18
+overlap: 9
+shape: "sphere"
+
+## NETWORK RSA
+## If L1L2, just set lambda1
+## Otherwise, set all three
+#lambda: 0.5863000
+#lambda1: 0.4200556
+#LambdaSeq: linear
+
+orientation: "mni"
+
+# SMALL FOOTPRINT
+SmallFootprint: false
+## NOT IMPLEMENTED
+# searchlight: false
+
+# Fields listed here will be expanded if this file is passed to expand stub.
+ExpandFields: []
+
+URLS: []
+COPY: []
+
+# If true, then Uz will be generated randomly to test the execution of
+# everything other than Adlas1().
+debug: False

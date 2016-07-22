@@ -1,0 +1,39 @@
+{
+    "LambdaSeq": "linear", 
+    "SaveResultsAs": "mat", 
+    "SmallFootprint": 1, 
+    "bias": 0, 
+    "cvholdout": [
+        2, 
+        3, 
+        4, 
+        5, 
+        6, 
+        7, 
+        8, 
+        9
+    ], 
+    "cvscheme": 1, 
+    "data": "s01_avg.mat", 
+    "data_var": "visual", 
+    "debug": 0, 
+    "executable": "WholeBrain_RSA_GrOWL1_2p", 
+    "filters": [
+        "rowfilter", 
+        "colfilter"
+    ], 
+    "finalholdout": 1, 
+    "lambda": 0.5, 
+    "lambda1": 0.5, 
+    "metadata": "metadata_avg_new.mat", 
+    "metadata_varname": "metadata", 
+    "normalize": "stdev", 
+    "orientation": "mni", 
+    "regularization": "grOWL", 
+    "searchlight": 0, 
+    "sim_metric": "chamfer", 
+    "sim_source": "chamfer", 
+    "target": "visual", 
+    "tau": 0.20000000000000001, 
+    "wrapper": "run_WholeBrain_RSA.sh"
+}

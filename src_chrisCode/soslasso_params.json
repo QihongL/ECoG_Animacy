@@ -1,0 +1,26 @@
+{
+    "LambdaSeq": "linear", 
+    "SmallFootprint": false, 
+    "bias": false, 
+    "cvholdout": 1, 
+    "cvscheme": 1, 
+    "data": "/home/chris/MRI/FacePlaceObject/data/mat/handmade/TR5/jlp03.mat", 
+    "data_var": "X", 
+    "debug": false, 
+    "filters": [
+        "rowfilter", 
+        "colfilter"
+    ], 
+    "finalholdout": 0, 
+    "lambda": 0.5863, 
+    "lambda1": 0.4200556, 
+    "metadata": "../shared/metadata_TR5_new.mat", 
+    "metadata_var": "metadata", 
+    "normalize": "zscore", 
+    "orientation": "tlrc", 
+    "regularization": "GrOWL2", 
+    "searchlight": false, 
+    "sim_metric": "correlation", 
+    "sim_source": "SIFT", 
+    "target": "visual"
+}
