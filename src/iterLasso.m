@@ -17,7 +17,7 @@ DIR.DATA = strcat('/Users/Qihong/Dropbox/github/ECOG_Manchester/data/ECoG/data/a
 DIR.OUT = '/Users/Qihong/Dropbox/github/ECOG_Manchester/results/allTimePts/';
 
 % specify parameters
-DATA_TYPE = 'raw'; % 'ref' OR 'raw'
+DATA_TYPE = 'ref'; % 'ref' OR 'raw'
 CVCOL = 1;      % use the 1st column of cv idx for now
 numCVB = 10;
 options.nlambda = 100;
@@ -142,7 +142,7 @@ for i = 1 : numSubjs
     
 end
 % save the data
-saveFileName = sprintf(strcat('newresults_', DATA_TYPE,'_bc',BOXCAR, ...
+saveFileName = sprintf(strcat('results_ilasso_', DATA_TYPE,'_bc',BOXCAR, ...
     '_wStart',WIND_START, 'wSize', WIND_SIZE, '.mat'));
 
-% save(strcat(DIR.OUT,saveFileName), 'results')
+save(strcat(DIR.OUT,saveFileName), 'results')
