@@ -24,7 +24,7 @@ DIR.OUT = strcat(DIR.PROJECT, 'results/temporal/');
 
 %% loop over all time points
 numTimePts = length(WIND_START);
-for t = 1 : numTimePts
+for t = 1 : 2 : numTimePts-1 
     fprintf('T = %d:', t)
     % get filenames and IDs for all subjects
     [filename, subjIDs] = getFileNames(DIR.DATA{t}, DATA_TYPE);
@@ -69,10 +69,10 @@ for t = 1 : numTimePts
             results{i}.accuracy(c) = result.lasso_accuracy_lambda_min;
             results{i}.lambda_min(c) = result.lasso_lambda_min;
             results{i}.coef{c} = result.lasso_coef_lambda_min;
-
         end 
     end
     fprintf('\n');
+    %% save the results 
     % get final output directory
     finalOutDir = fullfile(DIR.OUT, 'BoxCar', BOXCAR, ...
         'WindowStart', WIND_START(t).name, 'WindowSize', WIND_SIZE, '/');
@@ -82,7 +82,7 @@ for t = 1 : numTimePts
         mkdir(finalOutDir)
     end
     % save the data
-    saveFileName = sprintf( strcat('results_coef_', DATA_TYPE, '.mat'));
+    saveFileName = sprintf( strcat('results_i', DATA_TYPE, '.mat'));
     save(strcat(finalOutDir,saveFileName), 'results')
     
 end
