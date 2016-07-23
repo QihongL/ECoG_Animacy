@@ -3,7 +3,7 @@
 clear variables; clc; close all;
 
 % specify parameters
-DATA_TYPE = 'ref'; % 'ref' OR 'raw'
+DATA_TYPE = 'raw'; % 'ref' OR 'raw'
 CVCOL = 1;      % use the 1st column of cv idx for now
 numCVB = 10;
 options.nlambda = 100;
