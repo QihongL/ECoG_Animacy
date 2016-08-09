@@ -1,6 +1,6 @@
 %% Temporal analysis for the Manchster ECoG data
 % a single iteration of logistic regression with lasso or ridge penalty
-clear variables; clc; close all;
+clear variables; clc; clf;
 
 % specify mvpa parameters
 DATA_TYPES = {'raw','ref'};
@@ -81,7 +81,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% plot %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-FS = 14;
+FS = 20;
 LW = 2;
 xrange = [0,170];
 
@@ -138,7 +138,7 @@ xlabel('Time (unit of 10ms)', 'fontsize' , FS)
 leg = legend({'Raw','Ref', 'chance(.5)'}, 'location', 'southeast');
 set(leg,'FontSize',FS);
 
-
+% 
 % % plot withour error bars 
 % subplot(3,1,2)
 % hold on
@@ -181,7 +181,24 @@ ylabel('Holdout accuracy', 'fontsize' , FS)
 xlabel('Time (unit of 10ms)', 'fontsize' , FS)
 leg = legend({'collapsed accuracy ', 'chance(.5)'}, 'location', 'northeast');
 set(leg,'FontSize',FS);
+%%
+figure(5)
+hold on 
+errorbar(1:nTimePts-TRIM,average.collapAcc,se.collapAcc,'LineWidth',1.5, 'color', 'b')
+plot([1 nTimePts],[.5 .5], 'k--','LineWidth',3)
+plot(1:nTimePts-TRIM,average.collapAcc,'LineWidth',3, 'color', 'b')
 
+hold off 
+xlim([0, 163])
+ylim(yrange)
+
+title_text = sprintf('Logistic Lasso accuracy, averaged across all %d subjects \n collapsed across ref & raw (prefer ref)', nSubjs.all);
+% title(title_text, 'fontsize' , FS)
+ylabel('Holdout accuracy', 'fontsize' , FS, 'FontWeight','bold')
+xlabel('Time (unit: 10ms)', 'fontsize' , FS, 'FontWeight','bold')
+leg = legend({'Accuracy ', 'Chance(.5)'}, 'location', 'northeast');
+set(leg,'FontSize',FS);
+set(gca,'FontSize',FS)
 
 % % plot withour error bar 
 % subplot(2,1,2)
