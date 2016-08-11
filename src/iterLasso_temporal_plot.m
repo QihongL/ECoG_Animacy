@@ -278,26 +278,58 @@ xlabel('Time (Unit of 10ms)', 'fontsize', p.FS)
 %% senor distribution along the y axis
 tempSubPlotIdx = 1; 
 figure(4)
+increment = 3; 
 for i = 2 : 2: numCVB
-    subplot(2,5,tempSubPlotIdx)
+    subplot(5,increment,tempSubPlotIdx)
+    
     plot(allTps, weightedCoord{i}, 'linewidth', p.LW)
     title_text = sprintf('CVB threshold = %d', i);
     title(title_text, 'fontsize', p.FS);
-    ylabel('Postierior <---> Antierior', 'fontsize', p.FS)
-    xlabel('Time (unit of 10 ms)', 'fontsize', p.FS)
+    ylabel('Pos <---> Ant', 'fontsize', p.FS)
+    
     xlim([0 allTps(end)])
-    tempSubPlotIdx = tempSubPlotIdx + 1; 
+    tempSubPlotIdx = tempSubPlotIdx + increment; 
 end
+xlabel('Time (unit of 10 ms)', 'fontsize', p.FS)
+
 movingWindowSize = 5; 
+tempSubPlotIdx = 2; 
 for i = 2 : 2: numCVB
-    subplot(2,5,tempSubPlotIdx)
+    subplot(5,increment,tempSubPlotIdx)
+    
     plot(allTps, movingmean(weightedCoord{i}, 5), 'linewidth', p.LW)
     title_text = sprintf('Moving window size = %d', movingWindowSize);
-    title(title_text, 'fontsize', p.FS);
-    ylabel('Postierior <---> Antierior', 'fontsize', p.FS)
-    xlabel('Time (unit of 10 ms)', 'fontsize', p.FS)
+    if i == 2 
+        title(title_text, 'fontsize', p.FS);
+    end
+%     ylabel('Pos <---> Ant', 'fontsize', p.FS)
+    
     xlim([0 allTps(end)])
-    tempSubPlotIdx = tempSubPlotIdx + 1 ;
+    tempSubPlotIdx = tempSubPlotIdx + increment;
 end
+xlabel('Time (unit of 10 ms)', 'fontsize', p.FS)
+
+tempSubPlotIdx = 3; 
+for i = 2 : 2: numCVB
+    subplot(5,increment,tempSubPlotIdx)
+    
+    se = std(weightedCoord{i},0,2) * tinv(.975, nSubjs.ref - 1);
+    plot(allTps, mean(weightedCoord{i},2), 'linewidth', p.LW)
+%     errorbar(allTps, mean(weightedCoord{i},2), se, 'linewidth', p.LW)
+    title_text = sprintf('Average');
+    if i == 2 
+        title(title_text, 'fontsize', p.FS);
+    end
+%     ylabel('Pos <---> Ant', 'fontsize', p.FS)
+    
+    xlim([0 allTps(end)])
+    tempSubPlotIdx = tempSubPlotIdx + increment;
+end
+xlabel('Time (unit of 10 ms)', 'fontsize', p.FS)
 % legend(legend_subjIDs, 'fontsize', p.FS, 'location', 'NW')
+% suptitle('Feature locations')
+
+
+
+
 
