@@ -1,5 +1,5 @@
 %% electode y dimention movement analysis
-function [ weightedCoord ] = iltpHelper_getMeanY(metadata, allTps, curSubjID, runningSubjID, numCVB, yCoords, featureSelected)
+function [ weightedCoord ] = iltpHelper_getMeanY_s(metadata, allTps, curSubjID, runningSubjID, numCVB, yCoords, featureSelected)
     weightedCoord = cell(numCVB,1);
     
     for t = 1 : length(allTps)
