@@ -57,7 +57,6 @@ for t = 1 : nTimePts-TRIM
 %             (round(length(results{s}.coef{1}) - 1)/ 100), ...
 %             size(metadata(s).coords.xyz,1))
     end
-    
 
     
     % process REF data 
@@ -162,14 +161,14 @@ collapAccData = horzcat(refAccuracy.lasso_min(:,subjIdx.all.ref),...
     rawAccuracy.lasso_min(:,subjIdx.all.raw));
 % compute mean and std 
 average.collapAcc = mean(collapAccData,2);
-se.collapAcc = std(collapAccData') * tval / sqrt(nSubjs.all);
+se.collapAcc = std(collapAccData,0,2) * tval / sqrt(nSubjs.all);
 
 tval = tinv(1 - alpha/2, nSubjs.all-1);
 
 % plot with error bar 
 subplot(2,1,2)
 hold on 
-errorbar(1:nTimePts-TRIM,average.collapAcc,se.collapAcc,'LineWidth',1.5)
+errorbar(1:nTimePts-TRIM, average.collapAcc,se.collapAcc,'LineWidth',1.5)
 plot([1 nTimePts],[.5 .5], 'k--')
 hold off 
 xlim(xrange)
@@ -181,34 +180,36 @@ ylabel('Holdout accuracy', 'fontsize' , FS)
 xlabel('Time (unit of 10ms)', 'fontsize' , FS)
 leg = legend({'collapsed accuracy ', 'chance(.5)'}, 'location', 'northeast');
 set(leg,'FontSize',FS);
-%%
-figure(5)
-hold on 
-errorbar(1:nTimePts-TRIM,average.collapAcc,se.collapAcc,'LineWidth',1.5, 'color', 'b')
-plot([1 nTimePts],[.5 .5], 'k--','LineWidth',3)
-plot(1:nTimePts-TRIM,average.collapAcc,'LineWidth',3, 'color', 'b')
 
-hold off 
-xlim([0, 163])
-ylim(yrange)
 
-title_text = sprintf('Logistic Lasso accuracy, averaged across all %d subjects \n collapsed across ref & raw (prefer ref)', nSubjs.all);
-% title(title_text, 'fontsize' , FS)
-ylabel('Holdout accuracy', 'fontsize' , FS, 'FontWeight','bold')
-xlabel('Time (unit: 10ms)', 'fontsize' , FS, 'FontWeight','bold')
-leg = legend({'Accuracy ', 'Chance(.5)'}, 'location', 'northeast');
-set(leg,'FontSize',FS);
-set(gca,'FontSize',FS)
-
-% % plot withour error bar 
-% subplot(2,1,2)
+% %% plot on the poster (big font, bold, etc...)
+% figure(5)
 % hold on 
-% plot(average.collapAcc, 'linewidth', LW)
-% plot([1 nTimePts],[.5 .5], 'k--')
-% hold off 
+% errorbar(1:nTimePts-TRIM,average.collapAcc,se.collapAcc,'LineWidth',1.5, 'color', 'b')
+% plot([1 nTimePts],[.5 .5], 'k--','LineWidth',3)
+% plot(1:nTimePts-TRIM,average.collapAcc,'LineWidth',3, 'color', 'b')
 % 
-% xlim(xrange)
+% hold off 
+% xlim([0, 163])
 % ylim(yrange)
+% 
+% title_text = sprintf('Logistic Lasso accuracy, averaged across all %d subjects \n collapsed across ref & raw (prefer ref)', nSubjs.all);
+% % title(title_text, 'fontsize' , FS)
+% ylabel('Holdout accuracy', 'fontsize' , FS, 'FontWeight','bold')
+% xlabel('Time (unit: 10ms)', 'fontsize' , FS, 'FontWeight','bold')
+% leg = legend({'Accuracy ', 'Chance(.5)'}, 'location', 'northeast');
+% set(leg,'FontSize',FS);
+% set(gca,'FontSize',FS)
+% 
+% % % plot withour error bar 
+% % subplot(2,1,2)
+% % hold on 
+% % plot(average.collapAcc, 'linewidth', LW)
+% % plot([1 nTimePts],[.5 .5], 'k--')
+% % hold off 
+% % 
+% % xlim(xrange)
+% % ylim(yrange)
 
 
 
