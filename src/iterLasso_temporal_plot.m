@@ -71,13 +71,30 @@ propFeatureSelected.ref = nan(length(allTps), nSubjs.ref);
 for t = allTps
     curTimeIdx = find(allTps==t);
     
-    %
-    %     %% process RAW data
-    %     DATA_TYPE = DATA_TYPES{1};
-    %     % load metadata
-    %     load(strcat(DIR.METADATA{t}, 'metadata_', DATA_TYPE, '.mat'))
-    %     % loop over subjects
-    %     load(strcat(DIR.DATA{t}, 'results_ilasso_', DATA_TYPE, '.mat'))
+
+    %% process RAW data
+    DATA_TYPE = DATA_TYPES{1};
+    % load metadata
+    load(strcat(DIR.METADATA{t}, 'metadata_', DATA_TYPE, '.mat'))
+    % loop over subjects
+    load(strcat(DIR.DATA{t}, 'results_ilasso_', DATA_TYPE, '.mat'))
+    
+    %% gather weights values and number of iterations
+    [featureSelected.raw, numIterations_t.raw, wtsVal_t.raw] = ...
+        iltpHelper_getWtsVals_t(results, nSubjs.raw, curTimeIdx, numCVB, featureSelected.raw);
+    % unpack data
+    numIterations.raw(curTimeIdx,:) = numIterations_t.raw;
+    wtsVal.raw.all(curTimeIdx,:) = wtsVal_t.raw.all;
+    wtsVal.raw.nz(curTimeIdx,:) = wtsVal_t.raw.nz;
+    
+    %% get number/proportion of features & selected features
+    for s = 1 : nSubjs.raw
+        % total number of columns (features)
+        numFeatures.raw(s) = metadata(allSubjIDs.raw(s)).ncol;
+        % feature selection measures
+        nFeatureSelected.raw(curTimeIdx,s) = length(featureSelected.raw{s}{curTimeIdx});
+        propFeatureSelected.raw(curTimeIdx,s) = nFeatureSelected.raw(curTimeIdx,s)/numFeatures.raw(s);
+    end
     
     
     
@@ -116,11 +133,18 @@ for s = 1 : nSubjs.ref
 end
 yCoords.ref.median = median(yCoords.ref.all);
 
+yCoords.raw.all = [];
+for s = 1 : nSubjs.raw
+    yCoords.raw.all = vertcat(yCoords.raw.all, metadata(allSubjIDs.raw(s)).coords.xyz(:,2));
+end
+yCoords.raw.median = median(yCoords.raw.all);
+
 
 %% gather data , loop over subjects 1st 
 legend_subjIDs.ref = cell(nSubjs.ref,1);
 weightedCoord.ref = cell(numCVB,1);
-% weightedCoord.ref = nan(length(allTps),nSubjs.ref);
+legend_subjIDs.raw = cell(nSubjs.raw,1);
+weightedCoord.raw = cell(numCVB,1);
 for s = 1 : nSubjs.ref
     curSubjID = allSubjIDs.ref(s);
     % get the legend for subject id
@@ -136,8 +160,20 @@ for s = 1 : nSubjs.ref
     
 end
 
-
-
+for s = 1 : nSubjs.raw
+    curSubjID = allSubjIDs.raw(s);
+    % get the legend for subject id
+    legend_subjIDs.raw{s} = num2str(curSubjID);
+    
+    %% gather the Y coordinates for the selected features, thresholded by nCVB
+    weightedCoord_singleSub = iltpHelper_getMeanY_s(metadata, allTps, curSubjID,...
+        s, numCVB, yCoords.raw, featureSelected.raw);
+    % unpack the data
+    for c = 1 : numCVB
+        weightedCoord.raw{c}(:,s) = weightedCoord_singleSub{c};
+    end
+    
+end
 
 
 
@@ -186,7 +222,6 @@ xlabel('Time (Unit of 10ms)', 'fontsize', p.FS)
 
 %% number of lasso iterations over time (indicate multi-collinearity)
 figure(2)
-
 
 subplot(3,1,1)
 plot(allTps, numIterations.ref, 'linewidth', p.LW)
