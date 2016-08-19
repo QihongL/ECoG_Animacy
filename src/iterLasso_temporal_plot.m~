@@ -212,7 +212,7 @@ subplot(3,1,1)
 plot(allTps, propFeatureSelected.all, 'linewidth', p.LW)
 xlim([0 allTps(end)])
 legend(legend_subjIDs.all, 'fontsize', p.FS, 'location', 'NW')
-title_text = sprintf('Proportion features selected over time');
+title_text = sprintf('Proportion features selected over time, dataType = %s', DATA_TYPE);
 title(title_text, 'fontsize', p.FS);
 ylabel('% features selected', 'fontsize', p.FS)
 
@@ -222,7 +222,7 @@ plot(allTps, movingmean(propFeatureSelected.all, 3), 'linewidth', p.LW)
 
 legend(legend_subjIDs.all, 'fontsize', p.FS, 'location', 'NW')
 xlim([0 allTps(end)])
-title_text = sprintf('Moving average window size = 3');
+title_text = sprintf('Moving average window size = 3, dataType = %s', DATA_TYPE);
 title(title_text, 'fontsize', p.FS);
 ylabel('% features selected', 'fontsize', p.FS)
 
@@ -239,38 +239,38 @@ ylabel('% features selected', 'fontsize', p.FS)
 xlabel('Time (Unit of 10ms)', 'fontsize', p.FS)
 
 
-% %% number of lasso iterations over time (indicate multi-collinearity)
-% figure(2)
-% 
-% subplot(3,1,1)
-% plot(allTps, numIterations.all, 'linewidth', p.LW)
-% xlim([0 allTps(end)])
-% legend(legend_subjIDs.all, 'fontsize', p.FS, 'location', 'NW')
-% title_text = sprintf('Feature multicollinearity over time');
-% title(title_text, 'fontsize', p.FS);
-% ylabel('Number of lasso iterations', 'fontsize', p.FS)
-% 
-% 
-% subplot(3,1,2)
-% plot(allTps, movingmean(numIterations.all, 3), 'linewidth', p.LW)
-% 
-% legend(legend_subjIDs.all, 'fontsize', p.FS, 'location', 'NW')
-% xlim([0 allTps(end)])
-% title_text = sprintf('Moving average window size = 3');
-% title(title_text, 'fontsize', p.FS);
-% ylabel('Number of lasso iterations', 'fontsize', p.FS)
-% 
-% subplot(3,1,3)
-% se = tinv(.975, nSubjs.all-1) * std(numIterations.all, 0, 2) / sqrt(nSubjs.all);
-% hold on
-% errorbar(allTps, mean(numIterations.all,2), se, 'linewidth', p.LW)
-% plot([0 allTps(end)],[0 0], '--k')
-% hold off
-% xlim([0 allTps(end)])
-% title('Averaged across subjects', 'fontsize', p.FS);
-% ylabel('Number of lasso iterations', 'fontsize', p.FS)
-% xlabel('Time (Unit of 10ms)', 'fontsize', p.FS)
-% 
+%% number of lasso iterations over time (indicate multi-collinearity)
+figure(2)
+
+subplot(3,1,1)
+plot(allTps, numIterations.all, 'linewidth', p.LW)
+xlim([0 allTps(end)])
+legend(legend_subjIDs.all, 'fontsize', p.FS, 'location', 'NW')
+title_text = sprintf('Feature multicollinearity over time , dataType = %s', DATA_TYPE);
+title(title_text, 'fontsize', p.FS);
+ylabel('Number of lasso iterations', 'fontsize', p.FS)
+
+
+subplot(3,1,2)
+plot(allTps, movingmean(numIterations.all, 3), 'linewidth', p.LW)
+
+legend(legend_subjIDs.all, 'fontsize', p.FS, 'location', 'NW')
+xlim([0 allTps(end)])
+title_text = sprintf('Moving average window size = 3, dataType = %s', DATA_TYPE);
+title(title_text, 'fontsize', p.FS);
+ylabel('Number of lasso iterations', 'fontsize', p.FS)
+
+subplot(3,1,3)
+se = tinv(.975, nSubjs.all-1) * std(numIterations.all, 0, 2) / sqrt(nSubjs.all);
+hold on
+errorbar(allTps, mean(numIterations.all,2), se, 'linewidth', p.LW)
+plot([0 allTps(end)],[0 0], '--k')
+hold off
+xlim([0 allTps(end)])
+title('Averaged across subjects', 'fontsize', p.FS);
+ylabel('Number of lasso iterations', 'fontsize', p.FS)
+xlabel('Time (Unit of 10ms)', 'fontsize', p.FS)
+
 
 
 %% average weight magnitude
@@ -280,7 +280,7 @@ subplot(3,2,1)
 plot(allTps, wtsVal_all.all, 'linewidth', p.LW)
 xlim([0 allTps(end)])
 legend(legend_subjIDs.all, 'fontsize', p.FS, 'location', 'NW')
-title_text = sprintf('Weights magnitude over time');
+title_text = sprintf('Weights magnitude over time, dataType = %s', DATA_TYPE);
 title(title_text, 'fontsize', p.FS);
 ylabel('Average weights of all features', 'fontsize', p.FS)
 
@@ -290,14 +290,14 @@ plot(allTps, movingmean(wtsVal_all.all, 3), 'linewidth', p.LW)
 
 legend(legend_subjIDs.all, 'fontsize', p.FS, 'location', 'NW')
 xlim([0 allTps(end)])
-title_text = sprintf('Moving average window size = 3');
+title_text = sprintf('Moving average window size = 3, dataType = %s', DATA_TYPE);
 title(title_text, 'fontsize', p.FS);
 ylabel('Average weights of all features', 'fontsize', p.FS)
 
 subplot(3,2,5)
-se = tinv(.975, nSubjs.all-1) * std(wtsVal_all.all, 0, 2) / sqrt(nSubjs.all);
+se = tinv(.975, nSubjs.all-1) * std(wtsVal_all.all, 0, 2) / sqrt(nSubjs.ref);
 hold on
-errorbar(allTps, mean(wtsVal_all.all,2), se, 'linewidth', p.LW)
+errorbar(allTps, mean(wtsVal_all.ref,2), se, 'linewidth', p.LW)
 plot([0 allTps(end)],[0 0], '--k')
 hold off
 xlim([0 allTps(end)])
@@ -306,27 +306,27 @@ ylabel('Average weights of all features', 'fontsize', p.FS)
 xlabel('Time (Unit of 10ms)', 'fontsize', p.FS)
 
 subplot(3,2,2)
-plot(allTps, wtsVal_nz.all, 'linewidth', p.LW)
+plot(allTps, wtsVal_nz.ref, 'linewidth', p.LW)
 xlim([0 allTps(end)])
-legend(legend_subjIDs.all, 'fontsize', p.FS, 'location', 'NW')
-title_text = sprintf('Weights magnitude over time');
+legend(legend_subjIDs.ref, 'fontsize', p.FS, 'location', 'NW')
+title_text = sprintf('Weights magnitude over time, dataType = %s', DATA_TYPE);
 title(title_text, 'fontsize', p.FS);
 ylabel('Average weights of non-zero features', 'fontsize', p.FS)
 
 
 subplot(3,2,4)
-plot(allTps, movingmean(wtsVal_nz.all, 3), 'linewidth', p.LW)
+plot(allTps, movingmean(wtsVal_nz.ref, 3), 'linewidth', p.LW)
 
-legend(legend_subjIDs.all, 'fontsize', p.FS, 'location', 'NW')
+legend(legend_subjIDs.ref, 'fontsize', p.FS, 'location', 'NW')
 xlim([0 allTps(end)])
-title_text = sprintf('Moving average window size = 3');
+title_text = sprintf('Moving average window size = 3, dataType = %s', DATA_TYPE);
 title(title_text, 'fontsize', p.FS);
 ylabel('Average weights of non-zero features', 'fontsize', p.FS)
 
 subplot(3,2,6)
-se = tinv(.975, nSubjs.all-1) * std(wtsVal_nz.all, 0, 2) / sqrt(nSubjs.all);
+se = tinv(.975, nSubjs.ref-1) * std(wtsVal_nz.ref, 0, 2) / sqrt(nSubjs.ref);
 hold on
-errorbar(allTps, mean(wtsVal_nz.all,2), se, 'linewidth', p.LW)
+errorbar(allTps, mean(wtsVal_nz.ref,2), se, 'linewidth', p.LW)
 plot([0 allTps(end)],[0 0], '--k')
 hold off
 xlim([0 allTps(end)])
@@ -394,4 +394,8 @@ end
 xlabel('Time (unit of 10 ms)', 'fontsize', p.FS)
 % legend(legend_subjIDs.ref, 'fontsize', p.FS, 'location', 'NW')
 % suptitle('Feature locations')
+
+
+
+
 
