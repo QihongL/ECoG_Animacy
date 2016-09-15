@@ -27,10 +27,10 @@ DIR.METADATA = getAllDataPath(DIR.META_WIND_START, WIND_START, WIND_SIZE);
 %% get some common parameters, for data processing purpose 
 nTimePts = length(DIR.DATA);
 % read subject info for the raw data
-load(strcat(DIR.DATA{1}, 'results_', DATA_TYPES{1}, '.mat'))
+load(strcat(DIR.DATA{1}, 'results_basic_', DATA_TYPES{1}, '.mat'))
 [nSubjs.raw, allSubjIDs.raw] = getSubjInfoFromResults(results);
 % read subject info for the ref data
-load(strcat(DIR.DATA{1}, 'results_', DATA_TYPES{2}, '.mat'))
+load(strcat(DIR.DATA{1}, 'results_basic_', DATA_TYPES{2}, '.mat'))
 [nSubjs.ref, allSubjIDs.ref] = getSubjInfoFromResults(results);
 
 % get subject idx, number with difference reference frame
@@ -50,7 +50,7 @@ for t = 1 : nTimePts-TRIM
     % load metadata
     load(strcat(DIR.METADATA{t}, 'metadata_', DATA_TYPE, '.mat'))
     % loop over all subjects
-    load(strcat(DIR.DATA{t}, 'results_coef_', DATA_TYPE, '.mat'))
+    load(strcat(DIR.DATA{t}, 'results_basic_', DATA_TYPE, '.mat'))
     for s = 1 : nSubjs.raw
         rawAccuracy.lasso_min(t,s) = mean(results{s}.accuracy);
 %         fprintf('RAW: beta dim: %d, num electrodes: %d \n ', ...
@@ -64,7 +64,7 @@ for t = 1 : nTimePts-TRIM
     % load metadata
     load(strcat(DIR.METADATA{t}, 'metadata_', DATA_TYPE, '.mat'))
     % loop over subjects 
-    load(strcat(DIR.DATA{t}, 'results_coef_', DATA_TYPE, '.mat'))
+    load(strcat(DIR.DATA{t}, 'results_basic_', DATA_TYPE, '.mat'))
     for s = 1 : nSubjs.ref
         refAccuracy.lasso_min(t,s) = mean(results{s}.accuracy);
 %         fprintf('REF: beta dim: %d, num electrodes: %d \n', ...
@@ -72,8 +72,6 @@ for t = 1 : nTimePts-TRIM
     end
     
 end
-
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -94,7 +92,7 @@ for i = 1 : nSubjs.common
     cor_raw_ref = corr(refAccuracy.lasso_min(:,subjIdx.common.ref(i)),rawAccuracy.lasso_min(:,subjIdx.common.raw(i)));
     plot([1 nTimePts],[.5 .5], 'k--')
     hold off
-    ylim([.4 1])
+    ylim([0 1])
     xlim(xrange)
     title_text = sprintf('subjID: %d \n Correlation(raw,ref): %.2f', ...
         allSubjIDs.common(i), cor_raw_ref);
@@ -109,7 +107,7 @@ end
 
 %% plot the average accuracy
 figure(3)
-yrange = [.4,.9];
+yrange = [0,1];
 
 % compute the mean and the standard error 
 alpha = .05; 
