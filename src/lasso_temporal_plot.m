@@ -3,6 +3,7 @@
 clear variables; clc; clf;
 
 % specify mvpa parameters
+result_filename = 'results_mam_obj_';
 DATA_TYPES = {'raw','ref'};
 
 CVCOL = 1;      % use the 1st column of cv idx for now
@@ -10,7 +11,7 @@ numCVB = 10;
 options.nlambda = 100;
 BOXCAR = '001';
 WIND_SIZE = '0050';
-TRIM = 2; % TODO fix this! 
+TRIM = 115; % TODO fix this! 
 
 % specify path information
 DIR.PROJECT = '/Users/Qihong/Dropbox/github/ECOG_Manchester';
@@ -27,10 +28,10 @@ DIR.METADATA = getAllDataPath(DIR.META_WIND_START, WIND_START, WIND_SIZE);
 %% get some common parameters, for data processing purpose 
 nTimePts = length(DIR.DATA);
 % read subject info for the raw data
-load(strcat(DIR.DATA{1}, 'results_basic_', DATA_TYPES{1}, '.mat'))
+load(strcat(DIR.DATA{1}, result_filename, DATA_TYPES{1}, '.mat'))
 [nSubjs.raw, allSubjIDs.raw] = getSubjInfoFromResults(results);
 % read subject info for the ref data
-load(strcat(DIR.DATA{1}, 'results_basic_', DATA_TYPES{2}, '.mat'))
+load(strcat(DIR.DATA{1}, result_filename, DATA_TYPES{2}, '.mat'))
 [nSubjs.ref, allSubjIDs.ref] = getSubjInfoFromResults(results);
 
 % get subject idx, number with difference reference frame
@@ -50,7 +51,7 @@ for t = 1 : nTimePts-TRIM
     % load metadata
     load(strcat(DIR.METADATA{t}, 'metadata_', DATA_TYPE, '.mat'))
     % loop over all subjects
-    load(strcat(DIR.DATA{t}, 'results_basic_', DATA_TYPE, '.mat'))
+    load(strcat(DIR.DATA{t}, result_filename, DATA_TYPE, '.mat'))
     for s = 1 : nSubjs.raw
         rawAccuracy.lasso_min(t,s) = mean(results{s}.accuracy);
 %         fprintf('RAW: beta dim: %d, num electrodes: %d \n ', ...
@@ -64,7 +65,7 @@ for t = 1 : nTimePts-TRIM
     % load metadata
     load(strcat(DIR.METADATA{t}, 'metadata_', DATA_TYPE, '.mat'))
     % loop over subjects 
-    load(strcat(DIR.DATA{t}, 'results_basic_', DATA_TYPE, '.mat'))
+    load(strcat(DIR.DATA{t}, result_filename, DATA_TYPE, '.mat'))
     for s = 1 : nSubjs.ref
         refAccuracy.lasso_min(t,s) = mean(results{s}.accuracy);
 %         fprintf('REF: beta dim: %d, num electrodes: %d \n', ...
@@ -99,14 +100,15 @@ for i = 1 : nSubjs.common
     title(title_text, 'fontsize' , FS)
     ylabel('Holdout accuracy', 'fontsize' , FS)
     xlabel('Time (unit of 10ms)', 'fontsize' , FS)
-    leg = legend({'Raw','Ref', 'chance(.5)'}, 'location', 'southeast');
-    set(leg,'FontSize',FS); 
+    
 end
+leg = legend({'Raw','Ref', 'chance(.5)'}, 'location', 'southeast');
+set(leg,'FontSize',FS); 
 
 
 
 %% plot the average accuracy
-figure(3)
+figure(2)
 yrange = [0,1];
 
 % compute the mean and the standard error 
@@ -192,7 +194,7 @@ set(leg,'FontSize',FS);
 % ylim(yrange)
 % 
 % title_text = sprintf('Logistic Lasso accuracy, averaged across all %d subjects \n collapsed across ref & raw (prefer ref)', nSubjs.all);
-% % title(title_text, 'fontsize' , FS)
+% % title(title_text, 'fontsize' , FS) 
 % ylabel('Holdout accuracy', 'fontsize' , FS, 'FontWeight','bold')
 % xlabel('Time (unit: 10ms)', 'fontsize' , FS, 'FontWeight','bold')
 % leg = legend({'Accuracy ', 'Chance(.5)'}, 'location', 'northeast');

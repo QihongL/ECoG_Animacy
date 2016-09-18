@@ -3,7 +3,7 @@
 clear variables; clc; close all;
 
 % specify parameters
-DATA_TYPE = 'raw'; % 'ref' OR 'raw'
+DATA_TYPE = 'ref'; % 'ref' OR 'raw'
 CVCOL = 1;      % use the 1st column of cv idx for now
 numCVB = 10;
 options.nlambda = 100;
@@ -24,7 +24,10 @@ DIR.OUT = strcat(DIR.PROJECT, 'results/temporal/');
 % 
 TEMPPATH.basicLabels = fullfile(DIR.PROJECT, 'data/labels', 'labels_allObjs.mat');
 load(TEMPPATH.basicLabels)
+labels_allObjs.num.isMammal = find(labels_allObjs.isMammal==1);
+labels_allObjs.num.isAnimal = find(labels_allObjs.isAnimal==1);
 
+labels_mam_obj = vertcat(labels_allObjs.num.isMammal, [51:75]');
 
 %% loop over all time points
 numTimePts = length(WIND_START);
@@ -35,6 +38,17 @@ for t = 1 : numTimePts
     numSubjs = length(subjIDs); % number of subjects
     % load metadata
     load(strcat(DIR.DATA{t},filename.metadata))
+    
+%     if ~exist('tempStimuli') == 1 
+%         disp('tempStimuli is created');
+%         tempStimuli = metadata(1).stimuli;
+%     else
+%         for temptemp = 1 : length(metadata)
+%             if ~ all(strcmp(tempStimuli, metadata(temptemp).stimuli))
+%                 error('not the same ')
+%             end
+%         end
+%     end
     
     %% start the mvpa analysis
     results = cell(numSubjs,1);
@@ -57,12 +71,12 @@ for t = 1 : numTimePts
         
         % load the data
         load(strcat(DIR.DATA{t},filename.data{i}))
-%         y = metadata(s).targets(1).target;  % target 1 = label
-        y = labels_allObjs.isMammal(labels_allObjs.isAnimal);
-        if sum(labels_allObjs.isMammal(labels_allObjs.isAnimal))~= 25 
-            error('???')
-        end
-        X = X(labels_allObjs.isAnimal, :);
+        
+%         y = labels_allObjs.isMammal(labels_allObjs.isAnimal);
+%         X = X(labels_allObjs.isAnimal, :);
+        
+        y = vertcat(ones(25,1), zeros(25,1));
+        X = X(labels_mam_obj, :);
         [M,N] = size(X);
         
         % read data parameters
@@ -72,14 +86,14 @@ for t = 1 : numTimePts
         for c = 1: numCVB
             % choose a cv index
             testIdx = cvidx == c;
-            testIdx = testIdx(labels_allObjs.isAnimal);
+%             testIdx = testIdx(labels_allObjs.isAnimal);
+            testIdx = testIdx(labels_mam_obj);
             % fit logistic models
             result = runLasso(X, y, testIdx, options);
             % save performance
             results{i}.accuracy(c) = result.lasso_accuracy_lambda_min;
             results{i}.lambda_min(c) = result.lasso_lambda_min;
             results{i}.coef{c} = result.lasso_coef_lambda_min;
-
         end 
     end
     fprintf('\n');
@@ -93,7 +107,7 @@ for t = 1 : numTimePts
 %         mkdir(finalOutDir)
 %     end
     % save the data
-    saveFileName = sprintf( strcat('results_basic_', DATA_TYPE, '.mat'));
+    saveFileName = sprintf( strcat('results_mam_obj_', DATA_TYPE, '.mat'));
     save(strcat(finalOutDir,saveFileName), 'results')
     
 end
