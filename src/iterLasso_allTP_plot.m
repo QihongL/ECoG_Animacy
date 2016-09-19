@@ -12,14 +12,15 @@ DIR.OUT = '/Users/Qihong/Dropbox/github/ECOG_Manchester/results/allTimePts/';
 
 
 % specify parameters
+results_filename_prefix = 'results_m_nm_';
 DATA_TYPE = 'raw'; % 'ref' OR 'raw'
-resultsFileName = strcat('results_ilasso_', DATA_TYPE,'_bc010_wStart0200wSize1000');
+resultsFileName = strcat(results_filename_prefix, DATA_TYPE,'_bc010_wStart0200wSize1000');
 
 % constant
 chance = .5;
 alpha = .05;
 numCVB = 10;
-nTimePts = 100; 
+nTimePts = 100;
 
 
 p.FS = 14;
@@ -31,7 +32,7 @@ p.LW = 2;
 numSubjs = length(subjIDs); % number of subjects
 % load metadata
 load(strcat(DIR.DATA,filename.metadata))
-% load result files 
+% load result files
 load(fullfile(DIR.OUT, resultsFileName))
 
 idx_featureSelected = cell(numSubjs,1);
@@ -53,60 +54,68 @@ for s = 1 : numSubjs
         end
     end
     
-       
-    %     % accuracy
-    %     figure(1)
-    %     subplot(2, ceil(length(results)/2), s)
-    %     se = tinv(1 - alpha/2, numCVB - 1) * std(accuracies,0,2) / sqrt(numCVB);
-    %     errorbar(1:results{s}.iterNum, mean(accuracies,2),se, 'linewidth', p.LW);
-    %     title_text = sprintf('Subject ID = %d, dataType = %s', results{s}.subjID, DATA_TYPE);
-    %     title(title_text, 'fontsize', p.FS)
-    %     ylabel('Mean CV accuracy', 'fontsize', p.FS)
-    %     xlabel('Lasso iterations', 'fontsize', p.FS)
-    %     xlim([1, results{s}.iterNum])
-    %     ylim([.5 1])
-    %
-    %     % number of feature selected
-    %     figure(2)
-    %     subplot(2, ceil(length(results)/2), s)
-    %     se = tinv(1 - alpha/2, numCVB - 1) * std(numVoxSelected,0,2) / sqrt(numCVB);
-    %     errorbar(1:results{s}.iterNum, mean(numVoxSelected,2),se, 'linewidth', p.LW);
-    %     title_text = sprintf('Subject ID = %d, dataType = %s, \n numFeatures = %d', ...
-    %         results{s}.subjID, DATA_TYPE, metadata(results{s}.subjID).ncol);
-    %     title(title_text, 'fontsize', p.FS)
-    %     ylabel('Mean numFeature selected', 'fontsize', p.FS)
-    %     xlabel('Lasso iterations', 'fontsize', p.FS)
-    %     xlim([1, results{s}.iterNum])
-    %     ylim([0, 60])
-    %
-    %     % percent of feature selected
-    %     figure(3)
-    %     percentVoxSel = 100 * numVoxSelected / metadata(results{s}.subjID).ncol;
-    %     subplot(2, ceil(length(results)/2), s)
-    %     se = tinv(1 - alpha/2, numCVB - 1) * std(percentVoxSel,0,2) / sqrt(numCVB);
-    %     errorbar(1:results{s}.iterNum, mean(percentVoxSel,2),se, 'linewidth', p.LW);
-    %     title_text = sprintf('Subject ID = %d, dataType = %s, \n numFeatures = %d', ...
-    %         results{s}.subjID, DATA_TYPE, metadata(results{s}.subjID).ncol);
-    %     title(title_text, 'fontsize', p.FS)
-    %     ylabel('% feature selected', 'fontsize', p.FS)
-    %     xlabel('Lasso iterations', 'fontsize', p.FS)
-    %     xlim([1, results{s}.iterNum])
-    %     ylim([0, 3])
     
-%     figure(4)
-%     subplot(2, ceil(length(results)/2), s)
+    % accuracy
+    figure(1)
+    subplot(2, ceil(length(results)/2), s)
+    se = tinv(1 - alpha/2, numCVB - 1) * std(accuracies,0,2) / sqrt(numCVB);
+    errorbar(1:results{s}.iterNum, mean(accuracies,2),se, 'linewidth', p.LW);
+    title_text = sprintf('Subject ID = %d, dataType = %s', results{s}.subjID, DATA_TYPE);
+    title(title_text, 'fontsize', p.FS)
+    ylabel('Mean CV accuracy', 'fontsize', p.FS)
+    xlabel('Lasso iterations', 'fontsize', p.FS)
+    if results{s}.iterNum > 1
+        xlim([1, results{s}.iterNum])
+    end
+    ylim([.5 1])
+    
+    % number of feature selected
+    figure(2)
+    subplot(2, ceil(length(results)/2), s)
+    se = tinv(1 - alpha/2, numCVB - 1) * std(numVoxSelected,0,2) / sqrt(numCVB);
+    errorbar(1:results{s}.iterNum, mean(numVoxSelected,2),se, 'linewidth', p.LW);
+    title_text = sprintf('Subject ID = %d, dataType = %s, \n numFeatures = %d', ...
+        results{s}.subjID, DATA_TYPE, metadata(results{s}.subjID).ncol);
+    title(title_text, 'fontsize', p.FS)
+    ylabel('Mean numFeature selected', 'fontsize', p.FS)
+    xlabel('Lasso iterations', 'fontsize', p.FS)
+    if results{s}.iterNum > 1
+        xlim([1, results{s}.iterNum])
+    end
+    ylim([0, 60])
+    
+    % percent of feature selected
+    figure(3)
+    percentVoxSel = 100 * numVoxSelected / metadata(results{s}.subjID).ncol;
+    subplot(2, ceil(length(results)/2), s)
+    se = tinv(1 - alpha/2, numCVB - 1) * std(percentVoxSel,0,2) / sqrt(numCVB);
+    errorbar(1:results{s}.iterNum, mean(percentVoxSel,2),se, 'linewidth', p.LW);
+    title_text = sprintf('Subject ID = %d, dataType = %s, \n numFeatures = %d', ...
+        results{s}.subjID, DATA_TYPE, metadata(results{s}.subjID).ncol);
+    title(title_text, 'fontsize', p.FS)
+    ylabel('% feature selected', 'fontsize', p.FS)
+    xlabel('Lasso iterations', 'fontsize', p.FS)
+    if results{s}.iterNum > 1 
+        xlim([1, results{s}.iterNum])
+    end
+    ylim([0, 3])
+    
+    figure(4)
+    subplot(2, ceil(length(results)/2), s)
 %     histogram(idx_featureSelected{s}, metadata(results{s}.subjID).ncol / 100)
-%     xlim([0, metadata(results{s}.subjID).ncol])
-%     ylim([0, 70])
+    histogram(idx_featureSelected{s})
+    xlabel('Feature index', 'fontsize', p.FS)
+    xlim([0, metadata(results{s}.subjID).ncol])
+    ylim([0, 70])
     
 end
 
 
 
 
-%% 
+%%
 
-temp = 0; 
+temp = 0;
 
 
 sparsityOverTime = nan(nTimePts,numSubjs);
