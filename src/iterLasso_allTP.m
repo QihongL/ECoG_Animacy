@@ -1,11 +1,13 @@
 %% Iterative lasso for the Manchster ECoG data
 clear variables; clc; close all;
 %% specify parameters
-DATA_TYPE = 'raw'; % 'ref' OR 'raw'
+DATA_TYPE = 'ref'; % 'ref' OR 'raw'
 CVCOL = 1;      % use the 1st column of cv idx for now
 numCVB = 10;
 options.nlambda = 100;
 options.alpha = 1; % 1 == lasso, 0 == ridge
+saveFileName_prefix = 'results_mam_obj_';
+saveResultsFile = 1; 
 
 % constant
 CHANCE = .5;
@@ -31,7 +33,7 @@ TEMPPATH.basicLabels = fullfile('/Users/Qihong/Dropbox/github/ECOG_Manchester/da
 load(TEMPPATH.basicLabels)
 labels_allObjs.num.isMammal = find(labels_allObjs.isMammal==1);
 labels_allObjs.num.isAnimal = find(labels_allObjs.isAnimal==1);
-
+labels_mam_obj = vertcat(labels_allObjs.num.isMammal, [51:75]');
 
 %% get filenames and IDs for all subjects
 [filename, subjIDs] = getFileNames(DIR.DATA, DATA_TYPE);
@@ -56,10 +58,16 @@ for i = 1 : numSubjs
     % read data parameters
     cvidx = metadata(s).cvind(:,CVCOL);
     
-    % select basic level chuck 
-    X = X(~metadata(s).targets(1).target,:);
-    y = labels_allObjs.isMammal(~metadata(s).targets(1).target);
-    cvidx = cvidx(~metadata(s).targets(1).target);
+%     % select basic level chuck 
+%     X = X(~metadata(s).targets(1).target,:);
+%     y = labels_allObjs.isMammal(~metadata(s).targets(1).target);
+%     cvidx = cvidx(~metadata(s).targets(1).target);
+    
+    % compare mammal versus objects 
+    y = vertcat(ones(25,1), zeros(25,1));
+    X = X(labels_mam_obj, :);
+    cvidx = cvidx(labels_mam_obj);
+    
     
     %% run iterative lasso 
     [results{i}] = runIterLasso(X, y, cvidx, options, CHANCE);
@@ -68,9 +76,10 @@ for i = 1 : numSubjs
     
 end
 % save the data
-saveFileName_prefix = 'results_m_nm_';
 saveFileName = sprintf(strcat(saveFileName_prefix, DATA_TYPE,'_bc',BOXCAR, ...
     '_wStart',WIND_START, 'wSize', WIND_SIZE, '.mat'));
 
 finalOutDir = '/Users/Qihong/Dropbox/github/ECOG_Manchester/results/allTimePts';
-save(fullfile(finalOutDir,saveFileName), 'results')
+if saveResultsFile 
+    save(fullfile(finalOutDir,saveFileName), 'results')
+end
