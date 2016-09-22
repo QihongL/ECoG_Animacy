@@ -13,7 +13,7 @@ DIR.OUT = '/Users/Qihong/Dropbox/github/ECOG_Manchester/results/allTimePts/';
 
 % specify parameters
 results_filename_prefix = 'results_m_nm_';
-DATA_TYPE = 'raw'; % 'ref' OR 'raw'
+DATA_TYPE = 'ref'; % 'ref' OR 'raw'
 resultsFileName = strcat(results_filename_prefix, DATA_TYPE,'_bc010_wStart0200wSize1000');
 
 % constant
@@ -137,7 +137,7 @@ title(title_text, 'fontsize', p.FS)
 
 subplot(4,1,2)
 plot(movingmean(sparsityOverTime,3), 'linewidth', p.LW)
-legend(subjIds, 'fontsize', p.FS)
+% legend(subjIds, 'fontsize', p.FS)
 ylabel('Proportion sensors selected', 'fontsize', p.FS)
 ylim([0, .6])
 title_text = sprintf('Moving window size: %d', 3);
@@ -146,7 +146,7 @@ title(title_text, 'fontsize', p.FS)
 
 subplot(4,1,3)
 plot(movingmean(sparsityOverTime,10), 'linewidth', p.LW)
-legend(subjIds, 'fontsize', p.FS)
+% legend(subjIds, 'fontsize', p.FS)
 ylabel('Proportion sensors selected', 'fontsize', p.FS)
 ylim([0, .6])
 title_text = sprintf('Moving window size: %d', 10);

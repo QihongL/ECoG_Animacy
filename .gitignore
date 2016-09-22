@@ -4,8 +4,7 @@ plots/used/dprime_individual.pdf
 
 plots/used/dprime_group.pdf
 
-
-
+*.m~
 *.zip
 
 src/testing.m
