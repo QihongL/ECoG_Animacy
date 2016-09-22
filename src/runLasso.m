@@ -1,4 +1,4 @@
-function [ results ] = runLasso( X,y, testIdx, options )
+function [ results ] = runLasso(X, y, testIdx, options)
 %UNTITLED6 Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -18,7 +18,5 @@ results.lasso_coef_lambda_min = cvglmnetCoef(cvfit, 'lambda_min');
 % compute the performance
 y_hat = myStepFunction(cvglmnetPredict(cvfit, X_test,cvfit.lambda_min));
 results.lasso_accuracy_lambda_min = sum(y_hat == y_test) / length(y_test);
-
-
 end
 
