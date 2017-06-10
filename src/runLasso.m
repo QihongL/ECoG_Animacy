@@ -2,6 +2,8 @@ function [ results ] = runLasso(X, y, testIdx, options)
 %UNTITLED6 Summary of this function goes here
 %   Detailed explanation goes here
 
+% this function assume Range(Y) = {1,-1}
+
 % hold out the test set
 X_train = X(~testIdx,:);
 X_test = X(testIdx,:);

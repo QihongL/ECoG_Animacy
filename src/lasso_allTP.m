@@ -33,7 +33,8 @@ end
 %% start the mvpa analysis
 results = cell(numSubjs,1);
 % loop over subjects
-for i = 1 : numSubjs
+% for i = 1 : numSubjs
+for i = 1
     s = subjIDs(i);
     fprintf('Subj%.2d: ', s);
     
@@ -78,25 +79,25 @@ for i = 1 : numSubjs
         y_hat = myStepFunction(cvglmnetPredict(cvfit, X_test,cvfit.lambda_min));
         results{i}.lasso.accuracy.min(c) = sum(y_hat == y_test) / length(y_test);
         
-        % fit ridge
-        options.alpha = 0; % 1 == lasso, 0 == ridge
-        cvfit = cvglmnet(X_train, y_train, 'binomial', options);
-        results{i}.ridge.coef_1se{c} = cvglmnetCoef(cvfit, 'lambda_1se');
-        results{i}.ridge.lambda_1se(c) = cvfit.lambda_1se;
-        results{i}.ridge.coef_min{c} = cvglmnetCoef(cvfit, 'lambda_min');
-        results{i}.ridge.lambda_min(c) = cvfit.lambda_min;
-        
-        % compute the performance
-        y_hat = myStepFunction(cvglmnetPredict(cvfit, X_test,cvfit.lambda_1se));
-        results{i}.ridge.accuracy.onese(c) = sum(y_hat == y_test) / length(y_test);
-        y_hat = myStepFunction(cvglmnetPredict(cvfit, X_test,cvfit.lambda_min));
-        results{i}.ridge.accuracy.min(c) = sum(y_hat == y_test) / length(y_test);
+%         % fit ridge
+%         options.alpha = 0; % 1 == lasso, 0 == ridge
+%         cvfit = cvglmnet(X_train, y_train, 'binomial', options);
+%         results{i}.ridge.coef_1se{c} = cvglmnetCoef(cvfit, 'lambda_1se');
+%         results{i}.ridge.lambda_1se(c) = cvfit.lambda_1se;
+%         results{i}.ridge.coef_min{c} = cvglmnetCoef(cvfit, 'lambda_min');
+%         results{i}.ridge.lambda_min(c) = cvfit.lambda_min;
+%         
+%         % compute the performance
+%         y_hat = myStepFunction(cvglmnetPredict(cvfit, X_test,cvfit.lambda_1se));
+%         results{i}.ridge.accuracy.onese(c) = sum(y_hat == y_test) / length(y_test);
+%         y_hat = myStepFunction(cvglmnetPredict(cvfit, X_test,cvfit.lambda_min));
+%         results{i}.ridge.accuracy.min(c) = sum(y_hat == y_test) / length(y_test);
         
     end
     fprintf('\n');
 end
-% save the data
-saveFileName = sprintf( strcat('newresults_', DATA_TYPE,'_bc',BOXCAR, ...
-    '_wStart',WIND_START, 'wSize', WIND_SIZE, '.mat'));
-
-save(strcat(DIR.OUT,saveFileName), 'results')
+% % save the data
+% saveFileName = sprintf( strcat('newresults_', DATA_TYPE,'_bc',BOXCAR, ...
+%     '_wStart',WIND_START, 'wSize', WIND_SIZE, '.mat'));
+% 
+% save(strcat(DIR.OUT,saveFileName), 'results')

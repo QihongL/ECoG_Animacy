@@ -36,7 +36,6 @@ while true
             unusedVoxIdx{c} = setdiff(unusedVoxIdx{c}, result.lasso{iter-1}.voxSel{c});
         end
         
-        
         %% fit logistic lasso
         cvfit = cvglmnet(X_train, y_train, 'binomial', options);
         
@@ -69,7 +68,6 @@ while true
         end
         
     end
-    
     
     %% record the measures
     result.lasso{iter}.lambda_min = min_lambdas;
